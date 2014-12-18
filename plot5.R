@@ -1,4 +1,4 @@
-# Question : Across the United States, how have emissions from coal combustion-related sources changed from 1999–2008?
+# Question : How have emissions from motor vehicle sources changed from 1999–2008 in Baltimore City?
 
 #### My Working Directory
 # setwd("~/Documents/GitHub/ExData_Plotting2")
@@ -11,24 +11,26 @@ library(data.table)
 NEI <- readRDS("exdata-data-NEI_data/summarySCC_PM25.rds")
 SCC <- readRDS("exdata-data-NEI_data/Source_Classification_Code.rds")
 
+NEI_Baltimore <- subset(NEI,NEI$fips == "24510") 
+
 ## Filtering on coal combustion-related sources
 SCC_T <- as.data.table(SCC)
-SCC_Coal <- SCC_T[EI.Sector %like% "Coal"]$SCC
-NEI_Coal <- subset(NEI, SCC %in% SCC_Coal)
+SCC_Vehicles <- SCC_T[EI.Sector %like% "Vehicles"]$SCC
+NEI_Baltimore_Vehicles <- subset(NEI_Baltimore, SCC %in% SCC_Vehicles)
 
-p4 <- merge(x=NEI_Coal, y=SCC, by=SCC)
+p5 <- merge(x=NEI_Baltimore_Vehicles, y=SCC, by="SCC")
 
-p4_sum <- aggregate(p4$Emissions, by=list(p4$year,p4$EI.Sector), FUN = sum)
-names(p4_sum) <- c("Year","EI.Sector","Emissions")
+p5_sum <- aggregate(p5$Emissions, by=list(p5$year,p5$EI.Sector), FUN = sum)
+names(p5_sum) <- c("Year","EI.Sector","Emissions")
 
 
 # Histogram drawing
-png("plot4.png",width= 480, height = 480,  units= "px")
-q <- qplot(x=Year,y=Emissions,data=p4_sum,color=EI.Sector,xlab="",ylab="") + geom_line()
-q <- q + ggtitle("Total Tons of PM2.5 Emissions per Year and Sector")
-q <- q + theme(legend.position="bottom") + guides(col = guide_legend(nrow = 3))
+png("plot5.png",width= 480, height = 480,  units= "px")
+q <- qplot(x=Year,y=Emissions,data=p5_sum,color=EI.Sector,xlab="",ylab="") + geom_line()
+q <- q + ggtitle("Baltimore: Tons of PM2.5 Emissions related to Vehicles per Year")
+q <- q + theme(legend.position="bottom") + guides(col = guide_legend(nrow = 4))
 require(scales)
-q + scale_y_continuous(labels = comma, breaks=pretty(seq(min(p4_sum$Emissions), max(p4_sum$Emissions), by = 50000)))
+q + scale_y_continuous(labels = comma, breaks=pretty(seq(min(p5_sum$Emissions), max(p5_sum$Emissions), by = 10)))
 dev.off()
 
 
