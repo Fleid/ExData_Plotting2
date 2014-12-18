@@ -19,6 +19,7 @@ p2 <- t(as.matrix(p1))
 # Histogram drawing
 png("plot1.png",width= 500, height = 480,  units= "px")
 barplot(p2,beside=FALSE,col="#223856",yaxt="n",main="Total Tons of PM2.5 Emissions per Year",names=p2[1,])
+## special treatment for the y label format
 pts <- seq(0,8)
 axis(2, at = pts*1000000, labels = paste(pts, "MM", sep = ""),las=2)
 dev.off()
