@@ -14,12 +14,9 @@ NEI_Baltimore <- subset(NEI,NEI$fips == "24510")
 p1_Baltimore <- aggregate(NEI_Baltimore$Emissions, by=list(NEI_Baltimore$year), FUN = sum)
 names(p1_Baltimore) <- c("Year","Emissions")
 
-# First v
-# Alteration of the set so that it fits the hist function correctly
-p2_Baltimore <- t(as.matrix(p1_Baltimore))
-
 # Histogram drawing
-png("plot2.png",width= 480, height = 480,  units= "px")
-barplot(p2_Baltimore,beside=FALSE,col="#bc5e56",main="Baltimore: Tons of PM2.5 Emissions per Year",names=p2_Baltimore[1,],border=NA)
+png("plot2_Corrected.png",width= 480, height = 480,  units= "px")
+barplot(p1_Baltimore$Emissions,beside=FALSE,col="#bc5e56",main="Baltimore: Tons of PM2.5 Emissions per Year",names=p1_Baltimore$Year,border=NA)
 dev.off()
+
 
